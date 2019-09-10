@@ -2,7 +2,9 @@ package main
 
 import (
 	"fmt"
+	"log"
 
+	"github.com/dickyboKa/redis-learn/article"
 	"github.com/go-redis/redis"
 )
 
@@ -13,18 +15,25 @@ func main() {
 		Password: "", // no password set
 		DB:       0,  // use default DB
 	})
+	defer client.Close()
 
 	pong, err := client.Ping().Result()
+	if err != nil {
+		log.Panic(err)
+	}
 	fmt.Println(pong, err)
 
-	err = client.Set("my_key", "Hello World using go-redis and Redis", 0).Err()
-	if err != nil {
-		panic(err)
-	}
+	voteSystem := article.InitVote(client)
 
-	val, err := client.Get("my_key").Result()
-	if err != nil {
-		panic(err)
-	}
-	fmt.Println("my_key", val)
+	voteSystem.UpVote(12345)   // article:12345 has 1 vote
+	voteSystem.UpVote(12345)   // article:12345 has 2 vote
+	voteSystem.UpVote(12345)   // article:12345 has 3 vote
+	voteSystem.UpVote(10001)   // article:10001 has 1 vote
+	voteSystem.UpVote(10001)   // article:10001 has 2 vote
+	voteSystem.DownVote(10001) // article:10001 has 1 vote
+	voteSystem.UpVote(60056)   // article:60056 has 1 vote
+
+	voteSystem.ShowResults(12345)
+	voteSystem.ShowResults(10001)
+	voteSystem.ShowResults(60056)
 }
