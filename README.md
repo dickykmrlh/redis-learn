@@ -1,1 +1,1 @@
-A bunch of exercises in redis
+A bunch of redis exercises writing in golang
