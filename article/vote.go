@@ -11,7 +11,7 @@ type Article struct {
 	redis *redis.Client
 }
 
-func InitVote(client *redis.Client) *Article {
+func Init(client *redis.Client) *Article {
 	return &Article{
 		redis: client,
 	}
